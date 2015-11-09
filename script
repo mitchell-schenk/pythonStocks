@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 from yahoo_finance import Share
 
 apple = Share('AAPL')
-df = pd.DataFrame(apple.get_historical('2013-10-27','2015-10-27'))
+df = pd.DataFrame(apple.get_historical('2013-8-27','2015-11-06'))
 df2 = pd.DataFrame()
 my_list = []
 my_list2 = []
 df = df.reindex(index=df.index[::-1])
-plt.plot(pd.to_numeric(df['Adj_Close'].iloc[25:(df.size/8)-25],errors='coerce'))
+plt.plot(pd.to_numeric(df['Adj_Close'].iloc[200:int((df.size/8))],errors='coerce'))
 
 df2 = pd.to_numeric(df["Adj_Close"],errors='coerce')
 
-length = (df.size/8) - 50
-length2 = (df.size/8) - 200
+length = int((df.size/8)-50)
+length2 = int((df.size/8)-200)
 
 for x in range(0,int(length)):
 	sum = 0
@@ -38,7 +38,8 @@ for x in range(0,int(length2)):
 df4 = pd.DataFrame(my_list2)
 df4 = df4.reindex(index=df4.index[::-1])
 
+
+plt.plot(df3.iloc[150:int(df3.size)])
 plt.plot(df4)
-plt.plot(df3)
 
 plt.show()
