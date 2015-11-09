@@ -1,2 +1,2 @@
 # pythonThings
-mitchell is a faggot
+mitchell is a faggot, but he is alright 
