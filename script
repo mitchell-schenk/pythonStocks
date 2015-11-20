@@ -3,14 +3,20 @@ import matplotlib.pyplot as plt
 from yahoo_finance import Share
 
 apple = Share('AAPL')
-df = pd.DataFrame(apple.get_historical('2013-8-27','2015-11-06'))
+df = pd.DataFrame(apple.get_historical('2008-11-06','2015-11-06'))
 df2 = pd.DataFrame()
 my_list = []
 my_list2 = []
 df = df.reindex(index=df.index[::-1])
-plt.plot(pd.to_numeric(df['Adj_Close'].iloc[200:int((df.size/8))],errors='coerce'))
+#plt.plot(pd.to_numeric(df['Adj_Close'].iloc[200:int((df.size/8))],errors='coerce'))
 
+stock_price = []
 df2 = pd.to_numeric(df["Adj_Close"],errors='coerce')
+for x in range(0, df2.size):
+	temp = df2[x]
+	stock_price.append(temp)
+stock_price.reverse()
+dftemp = pd.DataFrame(stock_price)
 
 length = int((df.size/8)-50)
 length2 = int((df.size/8)-200)
@@ -18,14 +24,17 @@ length2 = int((df.size/8)-200)
 for x in range(0,int(length)):
 	sum = 0
 	for z in range(0,50):
-		num = float(df["Adj_Close"][x+z])
+		num = (df2[x+z])
 		sum += num
 	avg = sum/50
 	my_list.append(avg)
 
+my_list.reverse()
+for x in range(0,50):
+	tmep = 0;
+	my_list.insert(0,x)
 df3 = pd.DataFrame(my_list)
 df3 = df3.reindex(index=df3.index[::-1])
-
 
 for x in range(0,int(length2)):
 	sum2 = 0
@@ -34,12 +43,40 @@ for x in range(0,int(length2)):
 		sum2 += num2
 	avg2 = sum2/200
 	my_list2.append(avg2)
-
+my_list2.reverse()
+for x in range(0,200):
+	tmep = 0;
+	my_list2.insert(0,x)
 df4 = pd.DataFrame(my_list2)
 df4 = df4.reindex(index=df4.index[::-1])
-
-
-plt.plot(df3.iloc[150:int(df3.size)])
+startingBalance = float(input("How much money do you want to invest $"))
+startingholder = startingBalance
+stockQuantity = 0
+if (my_list[200] > my_list2[200]):
+	stockQuantity = startingBalance/stock_price[x]
+	startingBalance = startingBalance - int(stockQuantity)*stock_price[x]
+for x in range(200,int(dftemp.size)):
+	if ((my_list[x-1] < my_list2[x-1]) and (my_list[x] > my_list2[x])):
+		print("golden cross (buy) at x = " + str(x) + 'for $' + str(stock_price[x]) + ' per share')
+		stockQuantity = startingBalance/stock_price[x]
+		startingBalance = startingBalance - int(stockQuantity)*stock_price[x]
+	if ((my_list[x-1] > my_list2[x-1]) and (my_list[x] < my_list2[x])):
+		print("golden cross (sell) at x = " + str(x) + 'for $' + str(stock_price[x]) + ' per share')
+		startingBalance = startingBalance + stockQuantity*stock_price[x]
+		stockQuantity = 0
+Balance = (startingBalance+int(stockQuantity)*stock_price[dftemp.size-1])
+print ('you currently have $' + str(Balance))
+if (Balance > startingBalance):
+	print ('you have made $' + str(Balance - startingBalance))
+if (Balance < startingBalance):
+	print ('you have lost $' + str(startingBalance - Balance))
+oGStockQuantity = (startingholder/stock_price[200])
+oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
+print ('without the program you would have $' + str(oGStockPrice))
+plt.plot(dftemp)
+plt.plot(df3)
 plt.plot(df4)
-
+plt.xlabel('Time (Days)')
+plt.ylabel('Stock price ($)')
 plt.show()
+
