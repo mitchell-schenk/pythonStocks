@@ -1,0 +1,60 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from yahoo_finance import Share
+
+apple = Share('AAPL')
+df = pd.DataFrame(apple.get_historical('2008-11-06','2015-11-06'))
+df2 = pd.DataFrame()
+middleBand = []
+upperBand = []
+lowerBand = []
+df = df.reindex(index=df.index[::-1])
+#plt.plot(pd.to_numeric(df['Adj_Close'].iloc[200:int((df.size/8))],errors='coerce'))
+
+stock_price = []
+df2 = pd.to_numeric(df["Adj_Close"],errors='coerce')
+for x in range(0, df2.size):
+	temp = df2[x]
+	stock_price.append(temp)
+stock_price.reverse()
+dftemp = pd.DataFrame(stock_price)
+length = int((df.size/8)-20)
+sDevSum = 0
+for x in range(0,int(length)):
+	sum = 0
+	mean = 0
+	sDev = 0
+	for z in range(0,20):
+		num = (df2[x+z])
+		sum += num
+	avg = sum/20
+	for z in range(0,20):
+		sDevSum += (df2[x+z] - avg)*(df2[x+z] - avg)
+	sDev = 2**((sDevSum)/(19))
+
+	middleBand.append(avg)
+	tempUp = avg + (2*sDev)
+	tempDown = avg - (2*sDev)
+	upperBand.append(tempUp)
+	lowerBand.append(tempDown)
+
+middleBand.reverse()
+upperBand.reverse()
+lowerBand.reverse()
+"""for x in range(0,20):
+	temp = 0;
+	middleBand.insert(0,x)
+	upperBand.insert(0,x)
+	lowerBand.instert(0,x)"""
+df3 = pd.DataFrame(middleBand)
+df3 = df3.reindex(index=df3.index[::-1])
+df4 = pd.DataFrame(upperBand)
+df4 = df4.reindex(index=df3.index[::-1])
+df5 = pd.DataFrame(lowerBand)
+df5 = df5.reindex(index=df3.index[::-1])
+
+plt.plot(dftemp)
+plt.plot(df3)
+plt.plot(df4)
+plt.plot(df5)
+plt.show()
