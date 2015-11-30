@@ -73,10 +73,15 @@ if (Balance < startingBalance):
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
 print ('without the program you would have $' + str(oGStockPrice))
+maxValue = max(stock_price)
+print(maxValue)
+addedValue = maxValue/10
+yLimit = maxValue + addedValue
 plt.plot(dftemp)
 plt.plot(df3)
 plt.plot(df4)
 plt.xlabel('Time (Days)')
 plt.ylabel('Stock price ($)')
+plt.xlim((200,dftemp.size))
+plt.ylim((0,yLimit))
 plt.show()
-
