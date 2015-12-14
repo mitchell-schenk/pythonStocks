@@ -6,69 +6,39 @@ stock = Share('AAPL')
 df = pd.DataFrame(stock.get_historical('2014-11-06','2015-11-06'))
 df2 = pd.DataFrame
 stockPrice = []
-moving = []
+movingAve = []
+tempList = []
 df = df.reindex(index=df.index[::-1])
 
-#Define upper and lower bands
-upperBand = []
-lowerband = []
-
+stock_price = []
 df2 = pd.to_numeric(df["Adj_Close"],errors='coerce')
-for x in range(0,df2.size):
+for x in range(0, df2.size):
 	temp = df2[x]
-	stockPrice.append(temp)
-stockPrice.reverse()
-dfStock = pd.DataFrame(stockPrice)
+	stock_price.append(temp)
+stock_price.reverse()
+dftemp = pd.DataFrame(stock_price)
+
 length = int((df.size/8)-20)
 
-#Calculating the 20 day moving average
 for x in range(20,int(length)):
 	sum = 0
+	tempList = 0
 	for z in range(0,20):
 		num = (df2[x-z])
 		sum += num
+		tempList[z] = num
 	avg = sum/20
-	moving.append(avg)
-	
-#Calculate standard deviation
-for x in range(20,int(length)):
-	sum = 0
-	standDevSum = 0
-	upperTemp = 0
-	lowerTemp = 0
-	for z in range (0,20):
-		num = (df2[x-z])
-		sum += num
-	avg = sum/20
-	for z in range (0,20):
-		num = (df2[x-z])
-		standDevSum = standDevSum + (num - avg)*(num - avg)
-	standDevSum = (1/2)**(standDevSum/20)
-	upperTemp = moving[x] + (2*standDevSum)
-	lowerTemp = moving[x] - (2*standDevSum)
-	upperBand.append(upperTemp)
-	lowerband.append(lowerTemp)
-moving.reverse()
-upperBand.reverse()
-lowerband.reverse()
+	for z in range(x-z):
+		
+	movingAve.append(avg)
 
+movingAve.reverse()
+for x in range(0,40):
+	movingAve.insert(0,x)
+df3 = pd.DataFrame(movingAve)
+df3 = df3.reindex(index=df3.index[::-1])
 
-#Add 20 point holders
-for x in range(0,20):
-	temp = 0;
-	moving.insert(0,x)
-	upperBand.insert(0,x)
-	lowerband.insert(0,x)
-
-#converting from list into a data frame
-df20 = pd.DataFrame(moving)
-dfUpper = pd.DataFrame(upperBand)
-dfLower = pd.DataFrame(lowerband)
-
-#plot data
-plt.plot(dfStock)
-plt.plot(df20)
-plt.plot(dfUpper)
-plt.plot(dfLower)
-plt.xlim((20,dfStock.size))
+plt.plot(df2)
+plt.plot(df3)
+plt.xlim((40,dftemp.size))
 plt.show()
