@@ -72,7 +72,6 @@ if (Balance < startingBalance):
 	print ('you have lost $' + str(startingBalance - Balance))
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
-print ('without the program you would have $' + str(oGStockPrice))
 maxValue = max(stock_price)
 print(maxValue)
 addedValue = maxValue/10
