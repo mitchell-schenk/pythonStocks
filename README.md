@@ -1,2 +1,2 @@
 # pythonThings
-mitchell is a faggot, but he is alright 
+Happy non denominational winter observance everyone!
