@@ -74,8 +74,6 @@ if (Balance > temp):
 if (Balance < temp):
 	print ('You have lost $' + str(temp - Balance))
 
-print("What you would have net with no trades: " + str((temp3*stock_price[dftemp.size-1])))
-
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
 maxValue = max(stock_price)
