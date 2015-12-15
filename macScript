@@ -1,0 +1,91 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from yahoo_finance import Share
+
+apple = Share("YHOO")
+df = pd.DataFrame(apple.get_historical('2008-11-06','2015-11-06'))
+df2 = pd.DataFrame()
+my_list = []
+my_list2 = []
+df = df.reindex(index=df.index[::-1])
+#plt.plot(pd.to_numeric(df['Adj_Close'].iloc[200:int((df.size/8))],errors='coerce'))
+
+stock_price = []
+df2 = pd.to_numeric(df["Adj_Close"],errors='coerce')
+for x in range(0, df2.size):
+	temp = df2[x]
+	stock_price.append(temp)
+
+dftemp = pd.DataFrame(stock_price)
+stock_price.reverse()
+length = int((df.size/8)-50)
+length2 = int((df.size/8)-200)
+
+for x in range(0,int(length)):
+	sum = 0
+	for z in range(0,50):
+		num = float(df["Adj_Close"][x+z])
+		sum += num
+	avg = sum/50
+	my_list.append(avg)
+my_list.reverse()
+
+for x in range(0,50):
+	tmep = 0;
+	my_list.insert(0,x)
+df3 = pd.DataFrame(my_list)
+#df3 = df3.reindex(index=df3.index[::-1])
+
+for x in range(0,int(length2)):
+	sum2 = 0
+	for z in range(0,200):
+		num2 = float(df["Adj_Close"][x+z])
+		sum2 += num2
+	avg2 = sum2/200
+	my_list2.append(avg2)
+my_list2.reverse()
+for x in range(0,200):
+	tmep = 0;
+	my_list2.insert(0,x)
+df4 = pd.DataFrame(my_list2)
+#df4 = df4.reindex(index=df4.index[::-1])
+startingBalance = float(input("How much money do you want to invest $"))
+temp = startingBalance
+temp3 = temp/stock_price[0]
+startingholder = startingBalance
+stockQuantity = 0
+if (my_list[200] > my_list2[200]):
+	stockQuantity = startingBalance/stock_price[x]
+	temp2 = stockQuantity
+	startingBalance = startingBalance - int(stockQuantity)*stock_price[x]
+for x in range(200,int(dftemp.size)):
+	if ((my_list[x-1] < my_list2[x-1]) and (my_list[x] > my_list2[x])):
+		print("Buy at x = " + str(x) + ' for $' + str(stock_price[x]) + ' per share')
+		stockQuantity = startingBalance/stock_price[x]
+		startingBalance = startingBalance - int(stockQuantity)*stock_price[x]
+	if ((my_list[x-1] > my_list2[x-1]) and (my_list[x] < my_list2[x])):
+		print("Sell at x = " + str(x) + ' for $' + str(stock_price[x]) + ' per share')
+		startingBalance = startingBalance + stockQuantity*stock_price[x]
+		stockQuantity = 0
+Balance = (startingBalance+int(stockQuantity)*stock_price[dftemp.size-1])
+print ('You currently have $' + str(Balance))
+if (Balance > temp):
+	print ('You have made $' + str(Balance - temp))
+if (Balance < temp):
+	print ('You have lost $' + str(temp - Balance))
+
+print("What you would have net with no trades: " + str((temp3*stock_price[dftemp.size-1])))
+
+oGStockQuantity = (startingholder/stock_price[200])
+oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
+maxValue = max(stock_price)
+addedValue = maxValue/10
+yLimit = maxValue + addedValue
+plt.plot(pd.to_numeric(df['Adj_Close'].iloc[0:int(df.size)],errors='coerce'))
+plt.plot(df3)
+plt.plot(df4)
+plt.xlabel('Time (Days)')
+plt.ylabel('Stock price ($)')
+plt.xlim((200,int(dftemp.size)))
+plt.ylim((0,yLimit))
+plt.show()
