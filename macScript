@@ -72,7 +72,7 @@ print ('You currently have $' + str(Balance))
 if (Balance > temp):
 	print ('You have made $' + str(Balance - temp))
 if (Balance < temp):
-	print ('You have lost $' + str(temp - Balance))
+	#print ('You have lost $' + str(temp - Balance))
 
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
