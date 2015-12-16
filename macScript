@@ -74,6 +74,8 @@ if (Balance > temp):
 if (Balance < temp):
 	print ('You have lost $ lost o money' + str(temp - Balance))
 
+print(" this is a line")
+
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
 maxValue = max(stock_price)
