@@ -4,7 +4,7 @@ from yahoo_finance import Share
 
 ticker = input("enter the stock ticker: ")
 apple = Share(ticker)
-df = pd.DataFrame(apple.get_historical('2008-11-06','2015-11-06'))
+df = pd.DataFrame(apple.get_historical('2009-11-06','2016-01-01'))
 df2 = pd.DataFrame()
 my_list = []
 my_list2 = []
@@ -50,9 +50,9 @@ for x in range(0,200):
 	my_list2.insert(0,x)
 df4 = pd.DataFrame(my_list2)
 #df4 = df4.reindex(index=df4.index[::-1])
-startingBalance = float(input("How much money do you want to invest $"))
+startingBalance = 10000#float(input("How much money do you want to invest $"))
 temp = startingBalance
-temp3 = temp/stock_price[0]
+temp3 = temp/stock_price[200]
 startingholder = startingBalance
 stockQuantity = 0
 if (my_list[200] > my_list2[200]):
@@ -74,7 +74,7 @@ if (Balance > temp):
 	print ('You have made $' + str(Balance - temp))
 if (Balance < temp):
 	print ('You have lost $' + str(temp - Balance))
-print('net compared with no trades = ' + str(Balance - (temp3*stock_price[dftemp.size-1])))
+print('net compared with no trades = ' + str(Balance - ((temp/stock_price[200])*stock_price[dftemp.size-1])))
 
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
