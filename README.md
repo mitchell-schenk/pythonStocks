@@ -8,3 +8,30 @@ To do list:
 
 7: run a marathon
 8: get bitches
+
+
+Big:
+	AAPL
+	GE
+	XOM
+	JPM
+	GOOG
+Medium:
+	GOLD
+	JBLU
+	POR
+	PSO
+	MRVL
+	TSLA
+Small:
+	BKS
+	CZR
+	IRBT
+	NAT
+	VA
+Volitle:
+	INVT
+	AR
+	SYNA
+	ARDX
+	AAWW
