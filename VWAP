@@ -1,0 +1,35 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from yahoo_finance import Share
+
+currentStock = Share('AAPL')
+df = pd.DataFrame(currentStock.get_historical('2013-06-30','2016-01-07'))
+df = df.reindex(index=df.index[::-1])
+
+length = int(df.size/8)
+dfVolume = pd.to_numeric(df["Volume"],errors='coerce')
+dfHigh = pd.to_numeric(df["High"],errors='coerce')
+dfLow = pd.to_numeric(df["Low"],errors='coerce')
+dfClose = pd.to_numeric(df["Adj_Close"],errors='coerce')
+
+totalVP = 0 
+totalV = 0
+VWAP = []
+currentPrice = []
+
+for x in range(0,length):
+	typPrice = (float(dfHigh[x])+float(dfLow[x])+float(dfClose[x]))/3
+	vP = typPrice*dfVolume[x]
+	totalVP = totalVP + vP
+	totalV = totalV + dfVolume[x]
+	VWAP.append(totalVP/totalV)
+	currentPrice.append(dfClose[x])
+
+dfVWAP = pd.DataFrame(VWAP)
+dfCurrentPrice = pd.DataFrame(currentPrice)
+
+
+
+plt.plot(dfVWAP)
+plt.plot(dfCurrentPrice)
+plt.show()
