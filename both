@@ -4,7 +4,7 @@ from yahoo_finance import Share
 
 ticker = input("enter the stock ticker: ")
 apple = Share(ticker)
-df = pd.DataFrame(apple.get_historical('2013-11-06','2016-07-01'))
+df = pd.DataFrame(apple.get_historical('2012-11-06','2016-07-01'))
 df2 = pd.DataFrame()
 my_list = []
 my_list2 = []
@@ -76,14 +76,66 @@ if (Balance < temp):
 	print ('You have lost $' + str(temp - Balance))
 print('net compared with no trades = ' + str(Balance - ((10000/stock_price[200])*stock_price[dftemp.size-1])))
 
+lengthVolume = int(df.size/8)
+
+Volume = []
+dfTempV = pd.to_numeric(df["Volume"],errors='coerce')
+length2 = dfTempV.size
+for x in range(0,length2):
+	Volume.append(dfTempV[x])
+
+High = []
+dfTempV = pd.to_numeric(df["High"],errors='coerce')
+length2 = dfTempV.size
+for x in range(0,length2):
+	High.append(dfTempV[x])
+
+Low = []
+dfTempV = pd.to_numeric(df["Low"],errors='coerce')
+length2 = dfTempV.size
+for x in range(0,length2):
+	Low.append(dfTempV[x])
+
+Close = []
+dfTempV = pd.to_numeric(df["Adj_Close"],errors='coerce')
+length2 = dfTempV.size
+for x in range(0,length2):
+	Close.append(dfTempV[x])
+
+Volume.reverse()
+High.reverse()
+Low.reverse()
+Close.reverse()
+
+totalVP = 0 
+totalV = 0
+VWAP = []
+currentPrice = []
+
+for x in range(0,lengthVolume):
+	if(x ==  200):
+		totalVP = 0 
+		totalV = 0
+		
+	typPrice = (High[x]+Low[x]+Close[x])/3
+	vP = typPrice*Volume[x]
+	totalVP = totalVP + vP
+	totalV = totalV + Volume[x]
+	temp = totalVP/totalV
+	VWAP.append(temp)
+	currentPrice.append(Close[x])
+
+dfVWAP = pd.DataFrame(VWAP)
+
 oGStockQuantity = (startingholder/stock_price[200])
 oGStockPrice = oGStockQuantity*stock_price[dftemp.size-1]
 maxValue = max(stock_price)
 addedValue = maxValue/10
 yLimit = maxValue + addedValue
-plt.plot(pd.to_numeric(df['Adj_Close'].iloc[0:int(df.size)],errors='coerce'))
-plt.plot(df3)
-plt.plot(df4)
+plt.plot(pd.to_numeric(df['Adj_Close'].iloc[0:int(df.size)],errors='coerce'),'b-')
+plt.plot(df3,'g-')
+plt.plot(df4,'r-')
+plt.plot(dfVWAP,'m--')
 plt.xlabel('Time (Days)')
 plt.ylabel('Stock price ($)')
 plt.xlim((200,int(dftemp.size)))

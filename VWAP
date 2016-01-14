@@ -2,15 +2,43 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 from yahoo_finance import Share
 
-currentStock = Share('AAPL')
-df = pd.DataFrame(currentStock.get_historical('2013-06-30','2016-01-07'))
-df = df.reindex(index=df.index[::-1])
+currentStock = Share('MSFT')
+df = pd.DataFrame(currentStock.get_historical('2014-05-30','2016-01-12'))
+#df = df.reindex(index=df.index[::-1])
+
 
 length = int(df.size/8)
-dfVolume = pd.to_numeric(df["Volume"],errors='coerce')
-dfHigh = pd.to_numeric(df["High"],errors='coerce')
-dfLow = pd.to_numeric(df["Low"],errors='coerce')
-dfClose = pd.to_numeric(df["Adj_Close"],errors='coerce')
+
+Volume = []
+dfTemp = pd.to_numeric(df["Volume"],errors='coerce')
+length2 = dfTemp.size
+for x in range(0,length2):
+	Volume.append(dfTemp[x])
+
+High = []
+dfTemp = pd.to_numeric(df["High"],errors='coerce')
+length2 = dfTemp.size
+for x in range(0,length2):
+	High.append(dfTemp[x])
+
+Low = []
+dfTemp = pd.to_numeric(df["Low"],errors='coerce')
+length2 = dfTemp.size
+for x in range(0,length2):
+	Low.append(dfTemp[x])
+
+Close = []
+dfTemp = pd.to_numeric(df["Adj_Close"],errors='coerce')
+length2 = dfTemp.size
+for x in range(0,length2):
+	Close.append(dfTemp[x])
+
+
+
+Volume.reverse()
+High.reverse()
+Low.reverse()
+Close.reverse()
 
 totalVP = 0 
 totalV = 0
@@ -18,18 +46,20 @@ VWAP = []
 currentPrice = []
 
 for x in range(0,length):
-	typPrice = (float(dfHigh[x])+float(dfLow[x])+float(dfClose[x]))/3
-	vP = typPrice*dfVolume[x]
+	typPrice = (float(High[x])+float(Low[x])+float(Close[x]))/3
+	vP = typPrice*Volume[x]
 	totalVP = totalVP + vP
-	totalV = totalV + dfVolume[x]
-	VWAP.append(totalVP/totalV)
-	currentPrice.append(dfClose[x])
+	totalV = totalV + Volume[x]
+	temp = totalVP/totalV
+	VWAP.append(temp)
+	currentPrice.append(Close[x])
 
 dfVWAP = pd.DataFrame(VWAP)
 dfCurrentPrice = pd.DataFrame(currentPrice)
 
 
 
+
 plt.plot(dfVWAP)
-plt.plot(dfCurrentPrice)
+plt.plot(Close)
 plt.show()
