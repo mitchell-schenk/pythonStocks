@@ -7,7 +7,7 @@ df = pd.DataFrame(currentStock.get_historical('2014-05-30','2016-01-12'))
 #df = df.reindex(index=df.index[::-1])
 
 
-length = int(df.size/8)
+lengthVolume = int(df.size/8)
 
 Volume = []
 dfTemp = pd.to_numeric(df["Volume"],errors='coerce')
@@ -33,7 +33,11 @@ length2 = dfTemp.size
 for x in range(0,length2):
 	Close.append(dfTemp[x])
 
-
+date = []
+dfTemp = pd.to_numeric(df["Date"], errors = 'coerce')
+length2 = dfTemp.size
+for x in range(0,length2):
+	date.append(dfTemp[x])
 
 Volume.reverse()
 High.reverse()
@@ -45,7 +49,7 @@ totalV = 0
 VWAP = []
 currentPrice = []
 
-for x in range(0,length):
+for x in range(0,lengthVolume):
 	typPrice = (float(High[x])+float(Low[x])+float(Close[x]))/3
 	vP = typPrice*Volume[x]
 	totalVP = totalVP + vP
@@ -54,10 +58,17 @@ for x in range(0,length):
 	VWAP.append(temp)
 	currentPrice.append(Close[x])
 
+for x in range(1,lengthVolume):
+	if (VWAP[x] > currentPrice[x])and(VWAP[x-1] < currentPrice[x-1]):
+		print (str(x) + " marks the start of a good buy period at a price of $" + str(currentPrice[x]) + "\n")
+		goodTrade = True
+	if (VWAP[x] < currentPrice[x])and(VWAP[x-1] > currentPrice[x-1]):
+		print (str(x) + " marks the end of a good buy period at a price of $" + str(currentPrice[x]) + "\n")
+		goodTrade = False
+
+
 dfVWAP = pd.DataFrame(VWAP)
 dfCurrentPrice = pd.DataFrame(currentPrice)
-
-
 
 
 plt.plot(dfVWAP)
